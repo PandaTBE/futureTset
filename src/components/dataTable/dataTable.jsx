@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Preloader from '../preloader/preloader';
-import { getUsers, newCurrentPage, setSelectedUser, setUsersCopy, userSearch } from '../redux/usersDataReduser';
+import { getUsers, newCurrentPage, setSelectedUser, setUsersCopy, userSearch } from '../redux/usersDataReducer';
 import styled from 'styled-components/macro';
 import SingleUser from './components/singleUser';
 import SelectedUser from './components/selectedUser';
@@ -160,11 +160,11 @@ const DataTable = () => {
                 :
                 <div>
                     {inProgress ? <Preloader /> : usersArr}
-                    <Paginator
+                    {inProgress ? null : <Paginator
                         usersPerPage={usersPerPage}
                         totalUsers={modifiedUsers.length}
                         paginate={paginate}
-                        currentPage={currentPage} />
+                        currentPage={currentPage} />}
                     {selectedUser && <SelectedUser
                         firstName={selectedUser.firstName}
                         description={selectedUser.description}

@@ -118,10 +118,12 @@ export const setError = () => ({ type: ERROR });
 export const getUsers = (url) => async (dispatch) => {
     try {
         dispatch(setProgress(true))
-        dispatch(newCurrentPage(1));
-        const response = await usersAPI.getUsers(url);
+        dispatch(newCurrentPage(1))
+        dispatch(setSelectedUser(null))
+        const response = await usersAPI.getUsers(url)
         dispatch(setUsers(response.data))
         dispatch(setProgress(false))
+
 
     } catch (e) {
         dispatch(setError())

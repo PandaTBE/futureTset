@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { reduxForm, reset } from "redux-form";
 import { createField, Input, required } from "../../formsControl/fromsControl";
-import { addUser } from "../../redux/usersDataReduser";
+import { addUser } from "../../redux/usersDataReducer";
 import styled from 'styled-components';
 
 const TableHeader = styled.div`
