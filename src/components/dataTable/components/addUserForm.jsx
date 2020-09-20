@@ -1,8 +1,6 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { reduxForm, reset } from "redux-form";
+import { reduxForm } from "redux-form";
 import { createField, Input, required } from "../../formsControl/fromsControl";
-import { addUser } from "../../redux/usersDataReducer";
 import styled from 'styled-components';
 
 const TableHeader = styled.div`
@@ -49,12 +47,10 @@ const AddUserForm = ({ handleSubmit }) => {
 }
 const AddUserReduxForm = reduxForm({ form: 'addUser' })(AddUserForm);
 
-const UserForm = () => {
+const UserForm = (props) => {
 
-    const dispatch = useDispatch();
     const submitForm = (formData) => {
-        dispatch(addUser(formData));
-        dispatch(reset('addUser'))
+        props.submitAddUserForm(formData);
     }
 
     return (

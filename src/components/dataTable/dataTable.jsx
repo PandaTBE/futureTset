@@ -2,13 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Preloader from '../preloader/preloader';
-import { getUsers, newCurrentPage, setSelectedUser, setUsersCopy, userSearch } from '../redux/usersDataReducer';
+import { addUser, getUsers, newCurrentPage, setSelectedUser, setUsersCopy, userSearch } from '../redux/usersDataReducer';
 import styled from 'styled-components/macro';
 import SingleUser from './components/singleUser';
 import SelectedUser from './components/selectedUser';
 import UserForm from './components/addUserForm';
 import UserSearch from './components/searchForm';
 import Paginator from '../paginator/paginator';
+import { reset } from 'redux-form';
 
 const Container = styled.div`
 max-width:1140px;
@@ -112,6 +113,7 @@ const DataTable = () => {
     const searchUsers = (searchSymbols) => {
         if (searchSymbols) {
             dispatch(userSearch(searchSymbols));
+            dispatch(reset('search'))
         } else {
             dispatch(userSearch(''));
         }
@@ -125,6 +127,10 @@ const DataTable = () => {
         dispatch(getUsers(data));
 
     }
+    const submitAddUserForm = (formData) => {
+        dispatch(addUser(formData));
+        dispatch(reset('addUser'))
+    }
     return (
 
         <Container>
@@ -134,7 +140,7 @@ const DataTable = () => {
             </ChooseData>
             <AddUser>
                 <button onClick={onAddUserClick}>add user</button>
-                {addUserMode && <UserForm />}
+                {addUserMode && <UserForm submitAddUserForm={submitAddUserForm} />}
             </AddUser>
             <UserSearch searchUsers={searchUsers} />
             <TableHeader >
