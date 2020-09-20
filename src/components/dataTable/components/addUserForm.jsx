@@ -58,7 +58,9 @@ const UserForm = () => {
     }
 
     return (
-        <AddUserReduxForm onSubmit={submitForm} />
+        <div>
+            <AddUserReduxForm onSubmit={submitForm} />
+        </div>
     )
 }
 export default UserForm;

@@ -18,10 +18,7 @@ border-right: none;
 const SelectedNavItem = styled.li`
 border: 2px solid black;
 padding: 5px;
-background-color: orange;
-border-right: 1px solid black;
-
-
+background-color: rgb(105, 210, 255);
 `
 
 const Paginator = ({ usersPerPage, totalUsers, paginate, currentPage }) => {

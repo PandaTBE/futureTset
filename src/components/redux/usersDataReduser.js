@@ -1,6 +1,7 @@
 import { usersAPI } from "../DAL/api";
 
 const SET_USERS = 'test/usersDataReduser/SET_USERS',
+    SET_USERS_COPY = 'test/usersDataReduser/SET_USERS_COPY',
     SET_PROGRESS = 'test/usersDataReduser/SET_PROGRESS',
     SET_SELECTED_USER = 'test/usersDataReduser/SET_SELECTED_USER',
     ADD_USER = 'test/usersDataReduser/ADD_USER',
@@ -10,7 +11,7 @@ const SET_USERS = 'test/usersDataReduser/SET_USERS',
 
 const initialState = {
     users: [],
-    inProgress: true,
+    inProgress: false,
     selectedUser: null,
     searchSymbols: "",
     currentPage: 1,
@@ -27,6 +28,11 @@ const usersDataReduser = (state = initialState, action) => {
             return {
                 ...state,
                 users: action.users,
+                modifiedUsers: action.users
+            }
+        case SET_USERS_COPY:
+            return {
+                ...state,
                 modifiedUsers: action.users
             }
         case SET_PROGRESS:
@@ -52,7 +58,8 @@ const usersDataReduser = (state = initialState, action) => {
             }
             return {
                 ...state,
-                users: [userData, ...state.users]
+                users: [userData, ...state.users],
+                modifiedUsers: [userData, ...state.users]
             }
         case SEARCH_SYMBOLS:
             const { symbols } = action;
@@ -100,6 +107,7 @@ const usersDataReduser = (state = initialState, action) => {
     }
 }
 export const setUsers = (users) => ({ type: SET_USERS, users });
+export const setUsersCopy = (users) => ({ type: SET_USERS_COPY, users });
 export const setProgress = (progress) => ({ type: SET_PROGRESS, progress });
 export const setSelectedUser = (user) => ({ type: SET_SELECTED_USER, user });
 export const addUser = (data) => ({ type: ADD_USER, data });
@@ -107,11 +115,14 @@ export const userSearch = (symbols) => ({ type: SEARCH_SYMBOLS, symbols });
 export const newCurrentPage = (page) => ({ type: NEW_CURRENT_PAGE, page })
 export const setError = () => ({ type: ERROR });
 
-export const getUsers = () => async (dispatch) => {
+export const getUsers = (url) => async (dispatch) => {
     try {
-        const response = await usersAPI.getUsers();
+        dispatch(setProgress(true))
+        dispatch(newCurrentPage(1));
+        const response = await usersAPI.getUsers(url);
         dispatch(setUsers(response.data))
         dispatch(setProgress(false))
+
     } catch (e) {
         dispatch(setError())
     }

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Preloader from '../preloader/preloader';
-import { getUsers, newCurrentPage, setSelectedUser, setUsers, userSearch } from '../redux/usersDataReduser';
+import { getUsers, newCurrentPage, setSelectedUser, setUsersCopy, userSearch } from '../redux/usersDataReduser';
 import styled from 'styled-components/macro';
 import SingleUser from './components/singleUser';
 import SelectedUser from './components/selectedUser';
@@ -33,6 +33,20 @@ border-right: none;
     border: 1px solid black;
 }
 `
+const ChooseData = styled.div`
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 10px;
+`
+const AddUser = styled.div`
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+padding-bottom: 10px;
+`
+
 
 const DataTable = () => {
     const [sortModeId, editSortModeId] = useState(false);
@@ -46,11 +60,6 @@ const DataTable = () => {
     const { selectedUser, modifiedUsers, currentPage, usersPerPage, error } = useSelector(state => state.usersData);
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(getUsers());
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    useEffect(() => {
         const indexOfLastUser = currentPage * usersPerPage;
         const indexOfFirstUser = indexOfLastUser - usersPerPage;
         setUsersOnSinglePage(modifiedUsers.slice(indexOfFirstUser, indexOfLastUser))
@@ -58,10 +67,10 @@ const DataTable = () => {
 
     const usersSortFn = (sortMode, newArr, editUser, item) => {
         if (sortMode) {
-            dispatch(setUsers((newArr.sort((a, b) => a[String(item)] > b[String(item)] ? -1 : 1))));
+            dispatch(setUsersCopy((newArr.sort((a, b) => a[String(item)] > b[String(item)] ? -1 : 1))));
             editUser(false);
         } else {
-            dispatch(setUsers((newArr.sort((a, b) => a[String(item)] > b[String(item)] ? 1 : -1))));
+            dispatch(setUsersCopy((newArr.sort((a, b) => a[String(item)] > b[String(item)] ? 1 : -1))));
             editUser(true);
         }
     }
@@ -112,13 +121,21 @@ const DataTable = () => {
         dispatch(newCurrentPage(pageNum));
 
     }
+    const dataSet = (data) => () => {
+        dispatch(getUsers(data));
+
+    }
     return (
 
         <Container>
-            <div>
+            <ChooseData>
+                <button onClick={dataSet('http://www.filltext.com/?rows=32&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}')}>small dataset</button>
+                <button onClick={dataSet('http://www.filltext.com/?rows=1000&id={number|1000}&firstName={firstName}&delay=3&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}')}>large dataset</button>
+            </ChooseData>
+            <AddUser>
                 <button onClick={onAddUserClick}>add user</button>
                 {addUserMode && <UserForm />}
-            </div>
+            </AddUser>
             <UserSearch searchUsers={searchUsers} />
             <TableHeader >
                 <TableItem
@@ -137,11 +154,11 @@ const DataTable = () => {
                     onClick={usersSort(modifiedUsers, 'phone')}>{`phone ${sortModePhone ? '▲' : '▼'}`}
                 </TableItem>
             </TableHeader>
+
             {error
                 ? <Error>Server error</Error>
                 :
                 <div>
-
                     {inProgress ? <Preloader /> : usersArr}
                     <Paginator
                         usersPerPage={usersPerPage}
